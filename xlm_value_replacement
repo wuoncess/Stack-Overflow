@@ -1,0 +1,27 @@
+#https://stackoverflow.com/questions/51703566/make-a-modified-copy-of-the-xmls-and-put-them-in-the-corresponding-folders/51720681#51720681
+import os
+from xml.dom import minidom
+import shutil
+folder_path = "D:/py_projects/test"
+folder_name = "test"
+root = os.listdir(folder_path)
+xmls = []
+folders = []
+for file in root:
+    if file.find(".xml") != -1:
+        xmls.append(file)
+    else:
+        folders.append(file)
+for xml in xmls:
+    for folder in folders:
+        shutil.copy(folder_path+"/"+xml, folder_path+"/"+folder+"/"+xml)
+        dom = minidom.parse(folder_path + "/" + xml)
+        root = dom.documentElement
+        code_ok = root.getElementsByTagName("Code_OK")
+        for i in range(len(code_ok)):
+            print(code_ok[i].firstChild.data)
+            code_ok[i].firstChild.data = folder
+            print(code_ok[i].firstChild.data)
+        fileHandle = open(folder_path+"/"+folder+"/"+xml, 'w')
+        dom.writexml(fileHandle, ' ', ' ', ' ', 'UTF-8')
+        fileHandle.close()
